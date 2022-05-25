@@ -11,7 +11,8 @@ s = strel('square', 7); % elemento strutturante per morfologia matematica
 for idx = 1:500
     vidFrame = rgb2hsv(im2double(step(myCam)));
     % Creo maschere con i pixel=1 se nel range, pixel=0 altrimenti
-    binaryMaskH = (vidFrame(:,:,1) > 0.48 & vidFrame(:,:,1) < 0.73); % Hue più o meno blu (TODO: usare sen e cos)
+    binaryMaskH = (cos(vidFrame(:,:,1)) > cos(0.48) & cos(vidFrame(:,:,1)) < cos(0.73));
+    binaryMaskH = (sin(vidFrame(:,:,1)) > sin(0.48) & sin(vidFrame(:,:,1)) < sin(0.73)); % Hue più o meno blu (TODO: usare sen e cos)
     binaryMaskS = (vidFrame(:,:,2) > 0.5); % Soglia di saturazione
     % Applico morfologia matematica e sfocatura per pulire la maschera
     binaryMask = medfilt2((binaryMaskH&binaryMaskS), [13 13]);
