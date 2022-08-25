@@ -2,7 +2,7 @@
 clear;
 close all;
 myCam = imaq.VideoDevice('winvideo');
-myCam.VideoFormat = 'MJPG_640x480';
+myCam.VideoFormat = 'MJPG_848x480';
 vidPlayer = vision.DeployableVideoPlayer;
 
 %% Loop
