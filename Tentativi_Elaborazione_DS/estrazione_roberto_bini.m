@@ -1,11 +1,8 @@
 clc;clear;close;
 
-photos = imageDatastore('E:\elaborazione delle immagini\progetto\Invisible-Person-skin-detection--main\Small_Dataset\dataset\FacePhoto');
-gts = imageDatastore('E:\elaborazione delle immagini\progetto\Invisible-Person-skin-detection--main\Small_Dataset\Ground_Truth\GroundT_FacePhoto');
-
-% usare le gts come maschere per avere due variabili, una con le parti di
-% pelle delle photos e una senza le parti di pelle delle photos.
-% poi allenare un nuovo modello con skin e noSkin
+% modificare i percorsi con i propri
+photos = imageDatastore('..\Small_Dataset\Pratheepan_Dataset\FacePhoto');
+gts = imageDatastore('..\Small_Dataset\Ground_Truth\GroundT_FacePhoto');
 
 skins = {};
 noSkins = {};
