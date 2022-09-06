@@ -4,7 +4,7 @@ clear;
 close all;
 
 % Directory with sub directories: 
-DatasetPath = fullfile('C:','Users', 'mangi','OneDrive','Documenti','Github','Invisible-Person-skin-detection-','Small_Dataset','Full' );
+DatasetPath = fullfile('C:\Users\mangi\Documents\Github\Invisible-Person-skin-detection-\Small_Dataset\Full' );
 imds = imageDatastore(DatasetPath, 'IncludeSubfolders',true,'LabelSource','foldernames');
 
 % Number of images
