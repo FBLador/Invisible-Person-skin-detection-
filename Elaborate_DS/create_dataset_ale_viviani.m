@@ -20,7 +20,7 @@ fprintf('Done with initialization \n');
 % im_gt = image ground truth   im_o = image original with colors
 for i = 1:num_images
     im_gt = imread(imds.Files{i}) > 0.1; % Ground Truth boolean image
-    im_gt = im2double(im_gt(:,:,1));
+    im_gt = im_gt(:,:,1);
     im_o = im2double(imread(imds.Files{i+num_images})); % Original image
     im_o_R = im_o(:,:,1);
     im_o_G = im_o(:,:,2);

@@ -13,9 +13,8 @@ vidPlayer = vision.DeployableVideoPlayer;
 
 %% Loop
 firstFrame = im2double(step(myCam));
-s = strel('square', 7); % elemento strutturante per morfologia matematica
 
-for idx = 1:100
+for idx = 1:500
     vidFrame = im2double(step(myCam));
     [r,c,ch] = size(vidFrame);
     
