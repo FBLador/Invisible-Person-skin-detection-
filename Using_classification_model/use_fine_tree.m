@@ -14,7 +14,7 @@ vidPlayer = vision.DeployableVideoPlayer;
 %% Loop
 firstFrame = im2double(step(myCam));
 
-for idx = 1:100
+for idx = 1:300
     vidFrame = im2double(step(myCam));
     [r,c,ch] = size(vidFrame);
     
