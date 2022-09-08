@@ -14,8 +14,12 @@ vidPlayer = vision.DeployableVideoPlayer;
 %% Loop
 firstFrame = im2double(step(myCam));
 
-for idx = 1:100
+for idx = 1:200
     vidFrame = im2double(step(myCam));
+    
+    % Color constancy:
+    vidFrame = GrayWorld(vidFrame);
+
     [r,c,ch] = size(vidFrame);
     
     vidFrame_reshaped = reshape(vidFrame,r*c,ch);
