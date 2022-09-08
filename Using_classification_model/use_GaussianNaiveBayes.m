@@ -1,6 +1,12 @@
 %% Setup
 clear;
 close all;
+
+% Load classification model
+load GaussianNaiveBayes.mat;
+Mdl = NaiveBayes.ClassificationNaiveBayes;
+
+% Open Camera
 myCam = imaq.VideoDevice('winvideo');
 myCam.VideoFormat = 'MJPG_1280x720';
 vidPlayer = vision.DeployableVideoPlayer;
@@ -9,22 +15,16 @@ vidPlayer = vision.DeployableVideoPlayer;
 firstFrame = im2double(step(myCam));
 s = strel('square', 7); % elemento strutturante per morfologia matematica
 
-load trainedModel.mat
-kNNMdl = trainedModel.ClassificationKNN;
-
-for idx = 1:50
+for idx = 1:100
     vidFrame = im2double(step(myCam));
     [r,c,ch] = size(vidFrame);
     
     vidFrame_reshaped = reshape(vidFrame,r*c,ch);
-    score = predict(kNNMdl,vidFrame_reshaped);
+    score = predict(Mdl,vidFrame_reshaped);
 
     % Ristrutturiamo il vettore delle etichette in una immagine
     binaryMask = reshape(score,r,c) > 0.1;
 
-    % Applico morfologia matematica e sfocatura per pulire la maschera
-    binaryMask = medfilt2(binaryMask, [13 13]);
-    binaryMask = imdilate(binaryMask, s); % dilate delle parti bianche della maschera
     % Moltiplico l'inverso della maschera per la luminosità, così da
     % annerire i pixel del colore nel range prefissato
     vidFrame(:,:,:) = vidFrame(:,:,:) .* (1 -binaryMask);
