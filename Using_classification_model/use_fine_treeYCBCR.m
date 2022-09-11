@@ -3,8 +3,8 @@ clear;
 close all;
 
 % Load classification model
-load fine_tree.mat;
-Mdl = fine_tree.ClassificationTree;
+load FineTree_YCbCr.mat;
+Mdl = FineTree.ClassificationTree;
 
 % Open Camera
 myCam = imaq.VideoDevice('winvideo');
@@ -16,9 +16,10 @@ firstFrame = im2double(step(myCam));
 
 for idx = 1:300
     vidFrame = im2double(step(myCam));
-    [r,c,ch] = size(vidFrame);
+    vidFrameProcess = rgb2ycbcr(vidFrame);
+    [r,c,ch] = size(vidFrameProcess);
     
-    vidFrame_reshaped = reshape(vidFrame,r*c,ch);
+    vidFrame_reshaped = reshape(vidFrameProcess,r*c,ch);
     score = predict(Mdl,vidFrame_reshaped);
 
     % Ristrutturiamo il vettore delle etichette in una immagine
@@ -28,11 +29,14 @@ for idx = 1:300
     % annerire i pixel del colore nel range prefissato
     vidFrame(:,:,:) = vidFrame(:,:,:) .* (1 -binaryMask);
     coloredMask = vidFrame;
+
     % Applico la maschera binaria al primo frame, così da annerire tutte le
     % regioni che non mi interessano
     firstFrameMasked = firstFrame .* binaryMask;
+
     % Sommo le due maschere che insieme completeranno l'immagine
     out = coloredMask + firstFrameMasked;
+
     step(vidPlayer, out);
 end
 

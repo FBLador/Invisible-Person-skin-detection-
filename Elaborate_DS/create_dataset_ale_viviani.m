@@ -48,7 +48,7 @@ for i = 1:num_images
     % Find NOT skin pixels in the same way:
 
     reverse_im_gt = 1 - im_gt;
-    % Find skin pixels
+    % Find not skin pixels
     not_skin_im_o_R = im_o_R .* reverse_im_gt;
     not_skin_im_o_G = im_o_G .* reverse_im_gt;
     not_skin_im_o_B = im_o_B .* reverse_im_gt;
