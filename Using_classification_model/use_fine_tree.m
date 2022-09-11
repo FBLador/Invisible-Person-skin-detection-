@@ -3,12 +3,12 @@ clear;
 close all;
 
 % load modello di classificazione
-load FineTree_YCbCr.mat;
+load ../models/FineTree_YCbCr.mat;
 Mdl = FineTree.ClassificationTree;
 
 myCam = imaq.VideoDevice('winvideo');
 % inserire il formato del proprio dispositivo di acquisizione
-myCam.VideoFormat = 'MJPG_1280x720';
+myCam.VideoFormat = 'RGB24_960x720';
 vidPlayer = vision.DeployableVideoPlayer;
 
 %% Loop
@@ -27,11 +27,13 @@ for idx = 1:1000
 
     [r,c,ch] = size(vidFrame);
     
-    vidFrame_reshaped = reshape(vidFrame,r*c,ch);
+    vidFrame_reshaped = rgb2ycbcr(reshape(vidFrame,r*c,ch));
 
     score = predict(Mdl,vidFrame_reshaped);
 
     binaryMask = reshape(score,r,c) > 0.1;
+
+    binaryMask = PostProcessingBASELINE(binaryMask);
 
     % moltiplico l'inverso della maschera per la luminosità, così da
     % annerire i pixel del colore nel range prefissato

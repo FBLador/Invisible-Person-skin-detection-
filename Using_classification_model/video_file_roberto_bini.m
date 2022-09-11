@@ -3,11 +3,11 @@ clear;
 close all;
 
 % load modello di classificazione
-load FineTree_YCbCr.mat
+load ../models/FineTree_YCbCr.mat
 Mdl = FineTree.ClassificationTree;
 
 % inserire il nome del video di input
-vid = vision.VideoFileReader('video_mio.mp4');
+vid = vision.VideoFileReader('video.mp4');
 % nome del video in output
 vidWriter = VideoWriter('video_predicted.avi');
 open(vidWriter);
@@ -24,8 +24,6 @@ while ~isDone(vid)
     % dal frame del video
     vidFrame = imgaussfilt(vidFrame, 1);
 
-    vidFrame = GrayWorld(vidFrame);
-
     [r,c,ch] = size(vidFrame);
     
     vidFrame_reshaped = rgb2ycbcr(reshape(vidFrame,r*c,ch));
@@ -33,6 +31,8 @@ while ~isDone(vid)
     score = predict(Mdl,vidFrame_reshaped);
 
     binaryMask = reshape(score,r,c) > 0.1;
+
+    binaryMask = PostProcessingBASELINE(binaryMask);
 
     % moltiplico l'inverso della maschera per la luminosità per
     % annerire i pixel del colore nel range prefissato
