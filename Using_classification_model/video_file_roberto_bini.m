@@ -3,21 +3,22 @@ clear;
 close all;
 
 % load modello di classificazione
-load FineTree_YCbCr.mat;
+load FineTree_YCbCr.mat
 Mdl = FineTree.ClassificationTree;
 
-myCam = imaq.VideoDevice('winvideo');
-% inserire il formato del proprio dispositivo di acquisizione
-myCam.VideoFormat = 'MJPG_1280x720';
-vidPlayer = vision.DeployableVideoPlayer;
+% inserire il nome del video di input
+vid = vision.VideoFileReader('video_mio.mp4');
+% nome del video in output
+vidWriter = VideoWriter('video_predicted.avi');
+open(vidWriter);
 
 %% Loop
-firstFrame = im2double(step(myCam));
+firstFrame = im2double(step(vid));
 % filtro gaussiano con deviazione standard = 1 per rimuovere rumore
 firstFrame = imgaussfilt(firstFrame, 1);
 
-for idx = 1:1000
-    vidFrame = im2double(step(myCam));
+while ~isDone(vid)
+    vidFrame = im2double(step(vid));
 
     % filtro gaussiano con deviazione standard = 1 per rimuovere rumore
     % dal frame del video
@@ -27,15 +28,15 @@ for idx = 1:1000
 
     [r,c,ch] = size(vidFrame);
     
-    vidFrame_reshaped = reshape(vidFrame,r*c,ch);
+    vidFrame_reshaped = rgb2ycbcr(reshape(vidFrame,r*c,ch));
 
     score = predict(Mdl,vidFrame_reshaped);
 
     binaryMask = reshape(score,r,c) > 0.1;
 
-    % moltiplico l'inverso della maschera per la luminosità, così da
+    % moltiplico l'inverso della maschera per la luminosità per
     % annerire i pixel del colore nel range prefissato
-    vidFrame(:,:,:) = vidFrame(:,:,:) .* (1 -binaryMask);
+    vidFrame(:,:,:) = vidFrame(:,:,:) .* (1 - binaryMask);
     coloredMask = vidFrame;
 
     % applico la maschera binaria al primo frame
@@ -43,11 +44,12 @@ for idx = 1:1000
     % somma per ottenere il frame che verrà inserito nel video
     out = coloredMask + firstFrameMasked;
 
-    step(vidPlayer, out);
+    step(vid);
+    writeVideo(vidWriter, out);
 end
 
 %% Cleanup
-release(vidPlayer);
-release(myCam);
+release(vid);
+close(vidWriter);
 clear;
 close all;
